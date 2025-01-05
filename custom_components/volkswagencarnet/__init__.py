@@ -477,7 +477,7 @@ class VolkswagenCoordinator(DataUpdateCoordinator):
                 "VW Terms & Conditions might have changed & must be accepted."
                 "Try logging in to the portal: https://www.myvolkswagen.net/"
             )
-            /* raise repair issue when data is not updated */
+            # raise repair issue when data is not updated
             ir.async_create_issue(
                 hass,
                 DOMAIN,
@@ -486,11 +486,11 @@ class VolkswagenCoordinator(DataUpdateCoordinator):
                 is_persistent=True,
                 learn_more_url="https://www.myvolkswagen.net/"
                 severity=ir.IssueSeverity.ERROR,
-                translation_key="failed_to_update",
+                translation_key="data_update_failed",
             )
         else:
-            /* remove repair issue when data connectivity is re-established */
-            ir.async_delete_issue(hass, DOMAIN, "failed_to_update")
+            # remove repair issue when data connectivity is re-established
+            ir.async_delete_issue(hass, DOMAIN, "data_update_failed")
 
         convert_conf = self.entry.options.get(
             CONF_CONVERT, self.entry.data.get(CONF_CONVERT, CONF_NO_CONVERSION)
