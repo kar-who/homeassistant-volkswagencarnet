@@ -72,5 +72,10 @@
         }
       }
     }
+  },
+  "issues": {
+    "data_update_failed": {
+      "title": "Data could not be updated from Volkswagen servers",
+      "description": "This might happens when VW updates terms & conditions and have to be accepted after logging on to your VW account. Otherwise, your password might have changed and you have not updated the configuration of this integration."
   }
 }
