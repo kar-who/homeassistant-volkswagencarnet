@@ -24,6 +24,7 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from homeassistant.helpers import issue_registry as ir
 
 # pylint: disable=no-name-in-module,hass-relative-import
 from volkswagencarnet.vw_connection import Connection
@@ -472,9 +473,24 @@ class VolkswagenCoordinator(DataUpdateCoordinator):
 
         if vehicle is None:
             raise UpdateFailed(
-                "Failed to update Volkswagen Connect. Need to accept EULA? "
+                "Failed to update Volkswagen Connect. Has your password changed?"
+                "VW Terms & Conditions might have changed & must be accepted."
                 "Try logging in to the portal: https://www.myvolkswagen.net/"
             )
+            /* raise repair issue when data is not updated */
+            ir.async_create_issue(
+                hass,
+                DOMAIN,
+                "failed_to_update",
+                is_fixable=True,
+                is_persistent=True,
+                learn_more_url="https://www.myvolkswagen.net/"
+                severity=ir.IssueSeverity.ERROR,
+                translation_key="failed_to_update",
+            )
+        else:
+            /* remove repair issue when data connectivity is re-established */
+            ir.async_delete_issue(hass, DOMAIN, "failed_to_update")
 
         convert_conf = self.entry.options.get(
             CONF_CONVERT, self.entry.data.get(CONF_CONVERT, CONF_NO_CONVERSION)
